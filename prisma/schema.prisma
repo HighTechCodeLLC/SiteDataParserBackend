@@ -25,6 +25,8 @@ model Website {
   dateSelector           String?
   sizeSelector           String?
   magnetSelector         String?
-  skipRows               Int?
+  skipStartRows          Int?
+  skipEndRows            Int?
   endSymbols             String?
+  dateFormat             String?
 }

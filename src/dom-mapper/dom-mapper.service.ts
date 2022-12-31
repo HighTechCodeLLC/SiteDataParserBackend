@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { HTMLElement, parse } from 'node-html-parser';
+import { UtilsService } from 'src/utils/utils.service';
 
 @Injectable()
 export class DomMapperService {
+  constructor(private utilsService: UtilsService) {}
   async mapRawHtmlToDom(rawHtml: string) {
     return parse(rawHtml);
   }
@@ -10,16 +12,10 @@ export class DomMapperService {
   async getElementsBySelector(dom: HTMLElement, params: any) {
     const rows = dom.querySelectorAll(params.rowSelector);
 
-    params.skipRows ? rows.shift() : rows;
+    params.skipStartRows !== 0 ? rows.shift() : rows;
+    params.skipEndRows !== 0 ? rows.pop() : rows;
 
     return rows.map((item) => {
-      const splitedSizeStr = item
-        .querySelector(params.sizeSelector)
-        .textContent.trim()
-        .split(' ');
-      splitedSizeStr[1] =
-        splitedSizeStr[1][0].toUpperCase() === 'G' ? 'GB' : 'MB';
-
       return {
         name: item.querySelector(params.nameSelector).textContent.trim(),
         link: `${params.baseUrl}${
@@ -31,9 +27,16 @@ export class DomMapperService {
         leeches: Number(
           item.querySelector(params.leechesSelector).textContent.trim(),
         ),
-        date: item.querySelector(params.dateSelector).textContent.trim(),
-        size: splitedSizeStr.join(' '),
-        magnet: item.querySelector(params.magnetSelector).attributes['href'],
+        date: this.utilsService.standartizeDate(
+          item.querySelector(params.dateSelector).textContent.trim(),
+          params.dateFormat,
+        ),
+        size: this.utilsService.standartizeSize(
+          item.querySelector(params.sizeSelector).textContent,
+        ),
+        magnet: params.magnetSelector
+          ? item.querySelector(params.magnetSelector).attributes['href']
+          : '',
       };
     });
   }
