@@ -3,11 +3,13 @@ import { ParseDto } from './dto/parse.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import { ParserService } from './parser/parser.service';
 import { Website } from '@prisma/client';
+import { LoggerService } from 'src/logger/logger.service';
 
 @Injectable()
 export class ParserGatewayService {
   constructor(
     private parserService: ParserService,
+    private loggerService: LoggerService,
     private prisma: PrismaService,
   ) {}
 
@@ -19,12 +21,16 @@ export class ParserGatewayService {
       parseRequests.push(this.parserService.parse({ ...website, ...params }));
     }
 
-    const responses = await Promise.all(parseRequests);
+    const responses = await Promise.allSettled(parseRequests);
 
     const result = [];
 
     for (const response of responses) {
-      result.push(...response);
+      if (response.status === 'fulfilled') {
+        result.push(...response.value);
+      } else {
+        this.loggerService.log('errors.txt', `${response.reason.toString()}\n`);
+      }
     }
 
     return result.sort((a, b) => b.seeds - a.seeds);

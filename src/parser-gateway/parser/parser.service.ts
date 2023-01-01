@@ -9,14 +9,18 @@ export class ParserService {
     private domMapperService: DomMapperService,
   ) {}
   async parse(params: any) {
-    const rawHTML = await this.requestSenderService.getHTMLPage({
-      searchUrl: params.searchUrl,
-      searchRequest: params.searchRequest,
-      spaceHandler: params.spaceHandler,
-      endSymbols: params.endSymbols,
-    });
+    try {
+      const rawHTML = await this.requestSenderService.getHTMLPage({
+        searchUrl: params.searchUrl,
+        searchRequest: params.searchRequest,
+        spaceHandler: params.spaceHandler,
+        endSymbols: params.endSymbols,
+      });
 
-    const dom = await this.domMapperService.mapRawHtmlToDom(rawHTML);
-    return await this.domMapperService.getElementsBySelector(dom, params);
+      const dom = await this.domMapperService.mapRawHtmlToDom(rawHTML);
+      return await this.domMapperService.getElementsBySelector(dom, params);
+    } catch (error) {
+      throw new Error(`${params.name} - ${error}`).message;
+    }
   }
 }

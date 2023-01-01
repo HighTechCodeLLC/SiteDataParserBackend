@@ -6,6 +6,7 @@ import { ParserGatewayModule } from './parser-gateway/parser-gateway.module';
 import { RequestSenderModule } from './request-sender/request-sender.module';
 import { DomMapperModule } from './dom-mapper/dom-mapper.module';
 import { UtilsModule } from './utils/utils.module';
+import { LoggerModule } from './logger/logger.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UtilsModule } from './utils/utils.module';
     RequestSenderModule,
     DomMapperModule,
     UtilsModule,
+    LoggerModule,
   ],
   controllers: [],
   providers: [PrismaService],

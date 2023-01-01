@@ -1,5 +1,7 @@
 # configs
 .env
+credentials.json
+token.json
 
 # compiled output
 /dist
@@ -13,7 +15,7 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
+errors.txt
 # OS
 .DS_Store
 

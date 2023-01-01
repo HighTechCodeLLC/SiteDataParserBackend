@@ -19,7 +19,7 @@ model Website {
   spaceHandler           String  @default("+")
   rowSelector            String?
   nameSelector           String?
-  linkSelector            String?
+  linkSelector           String?
   seedsSelector          String?
   leechesSelector        String?
   dateSelector           String?
